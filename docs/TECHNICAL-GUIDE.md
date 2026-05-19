@@ -38,6 +38,33 @@ Core By Millie is a subscription-based Pilates programming platform. This docume
 
 **To go live:** In Stripe dashboard, switch from Test to Live mode, create the same 4 products again, copy the new live Price IDs, and update the environment variables in Vercel.
 
+#### Stripe Webhook (configured 2026-05-19)
+
+The webhook tells your site when a payment succeeds so the member gets access. Without it, members could pay but never reach the portal.
+
+**Current webhook endpoint (test mode):**  
+`https://core-by-millie.vercel.app/api/stripe/webhook`
+
+**Events it listens for:**
+- `checkout.session.completed` — grants access after successful payment
+- `customer.subscription.updated` — handles plan changes / renewals
+- `customer.subscription.deleted` — removes access on cancellation
+
+**What happens when someone pays:**
+1. Stripe fires `checkout.session.completed` to the webhook URL
+2. Your site sets `subscription_status = active` and `membership_tier = <plan>` in the `profiles` table
+3. The portal checks those fields and lets the member in
+
+**To re-configure for a new domain (when going live):**
+1. Stripe dashboard → Developers → Webhooks → Add destination
+2. New endpoint URL: `https://yournewdomain.com/api/stripe/webhook`
+3. Select the same 3 events above
+4. Copy the new `whsec_...` signing secret
+5. Update `STRIPE_WEBHOOK_SECRET` in Vercel Environment Variables → Redeploy
+
+**Manual fix if webhook fails (rare):**  
+If a member paid but has no access, go to Supabase → Table Editor → `profiles`, find their row, and manually set `membership_tier` and `subscription_status = active`.
+
 ---
 
 ### 3. Vercel — Website Hosting
