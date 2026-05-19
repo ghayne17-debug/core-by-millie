@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { PLANS, type PlanKey } from '@/lib/stripe'
+import { PLANS, type PlanKey } from '@/lib/plans'
 
 export async function signUp(state: { error?: string } | undefined, formData: FormData) {
   const supabase = await createClient()

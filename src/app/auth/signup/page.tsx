@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import { signUp } from '@/app/actions/auth'
-import { PLANS, type PlanKey } from '@/lib/stripe'
+import { PLANS, type PlanKey } from '@/lib/plans'
 
 function SignupForm() {
   const [state, action, pending] = useActionState(signUp, undefined)
