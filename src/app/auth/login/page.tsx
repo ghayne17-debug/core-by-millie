@@ -1,39 +1,54 @@
 'use client'
 
 import { useActionState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { signIn } from '@/app/actions/auth'
+import { PLANS, type PlanKey } from '@/lib/stripe'
 
 export default function LoginPage() {
   const [state, action, pending] = useActionState(signIn, undefined)
+  const searchParams = useSearchParams()
+  const plan = searchParams.get('plan') as PlanKey | null
+  const planDetails = plan && PLANS[plan] ? PLANS[plan] : null
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 bg-stone-50">
-      <div className="w-full max-w-md bg-white rounded-2xl border border-stone-200 p-8">
+    <main className="min-h-screen flex items-center justify-center px-4 bg-[var(--background)]">
+      <div className="w-full max-w-md bg-white rounded-2xl border border-[#e8d8cc] p-8">
         <div className="text-center mb-8">
-          <Link href="/" className="text-xl font-semibold text-stone-800">
+          <Link href="/" className="text-xl font-semibold text-[var(--foreground)]">
             Core <span className="text-[var(--brand)]">By Millie</span>
           </Link>
-          <p className="text-stone-500 text-sm mt-2">Sign in to your portal</p>
+          {planDetails ? (
+            <div className="mt-3">
+              <p className="text-sm text-[var(--brand-dark)]">Sign in to continue with</p>
+              <p className="font-semibold text-[var(--foreground)]">{planDetails.name}</p>
+              <p className="text-sm text-[var(--brand)]">${planDetails.price / 100} AUD/month</p>
+            </div>
+          ) : (
+            <p className="text-[var(--brand-dark)] text-sm mt-2">Sign in to your portal</p>
+          )}
         </div>
 
         <form action={action} className="space-y-5">
+          {plan && <input type="hidden" name="plan" value={plan} />}
+
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1.5" htmlFor="email">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-1.5" htmlFor="email">
               Email
             </label>
             <input
               id="email" name="email" type="email" required autoComplete="email"
-              className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-[var(--brand)] transition-colors"
+              className="w-full px-4 py-3 rounded-xl border border-[#e8d8cc] focus:outline-none focus:border-[var(--brand)] transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1.5" htmlFor="password">
+            <label className="block text-sm font-medium text-[var(--foreground)] mb-1.5" htmlFor="password">
               Password
             </label>
             <input
               id="password" name="password" type="password" required autoComplete="current-password"
-              className="w-full px-4 py-3 rounded-xl border border-stone-200 focus:outline-none focus:border-[var(--brand)] transition-colors"
+              className="w-full px-4 py-3 rounded-xl border border-[#e8d8cc] focus:outline-none focus:border-[var(--brand)] transition-colors"
             />
           </div>
 
@@ -50,9 +65,12 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p className="text-center text-sm text-stone-500 mt-6">
+        <p className="text-center text-sm text-[var(--brand-dark)] mt-6">
           Don&apos;t have an account?{' '}
-          <Link href="/membership" className="text-[var(--brand)] hover:underline">
+          <Link
+            href={plan ? `/membership` : '/membership'}
+            className="text-[var(--brand)] hover:underline"
+          >
             Choose a plan
           </Link>
         </p>
