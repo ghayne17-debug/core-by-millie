@@ -21,6 +21,7 @@ export default async function Navbar() {
           <Link href="/about" className="hover:text-[var(--foreground)] transition-colors">About</Link>
           <Link href="/membership" className="hover:text-[var(--foreground)] transition-colors">Membership</Link>
           <Link href="/studio-plans" className="hover:text-[var(--foreground)] transition-colors">Studios</Link>
+          <Link href="/book" className="hover:text-[var(--foreground)] transition-colors">Book Private</Link>
           <Link href="/contact" className="hover:text-[var(--foreground)] transition-colors">Contact</Link>
         </div>
 
@@ -28,12 +29,20 @@ export default async function Navbar() {
           {user ? (
             <>
               {profile?.is_admin && (
-                <Link
-                  href="/admin/upload"
-                  className="text-sm px-4 py-2 rounded-full bg-[var(--foreground)] text-white hover:bg-[var(--brand-dark)] transition-colors"
-                >
-                  + Upload Content
-                </Link>
+                <>
+                  <Link
+                    href="/admin/privates"
+                    className="text-sm text-[var(--brand-dark)] hover:text-[var(--foreground)] transition-colors"
+                  >
+                    Privates
+                  </Link>
+                  <Link
+                    href="/admin/upload"
+                    className="text-sm px-4 py-2 rounded-full bg-[var(--foreground)] text-white hover:bg-[var(--brand-dark)] transition-colors"
+                  >
+                    + Upload Content
+                  </Link>
+                </>
               )}
               <Link
                 href="/portal/instructor"
